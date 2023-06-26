@@ -1,0 +1,9 @@
+package com.fastcampus.loan.service;
+
+import com.fastcampus.loan.dto.CounselDTO.*;
+
+public interface CounselService {
+
+    Response create(Request request);
+
+}
