@@ -12,6 +12,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        use_sql_comments: true
+        show_sql: true
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     database-platform: org.hibernate.dialect.H2Dialect
@@ -19,5 +21,6 @@ spring:
     console:
       path: /h2-console
       enabled: true
-logging.level:
-  org.hibernate.SQL: debug
+logging:
+  level:
+    org.hibernate.type.descriptor.sql: TRACE
