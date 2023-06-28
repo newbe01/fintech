@@ -38,5 +38,5 @@ public class Terms extends BaseEntity {
 
     @Column(columnDefinition = "varchar(255) NOT NULL COMMENT '약관상세 URL'")
     private String termsDetailUrl;
-    
+
 }
