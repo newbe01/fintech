@@ -95,4 +95,21 @@ public class ApplicationServiceTest {
         assertThat(actual.getHopeAmount()).isEqualTo(request.getHopeAmount());
     }
 
+    @Test
+    void Should_DeletedApplicationEntity_When_requestDeleteExistApplicationInfo() {
+
+        Application entity = Application.builder()
+                .applicationId(1L)
+                .build();
+        Long targetId = 1L;
+
+        when(applicationRepository.save(any(Application.class))).thenReturn(entity);
+        when(applicationRepository.findById(targetId)).thenReturn(Optional.ofNullable(entity));
+
+        applicationService.delete(targetId);
+
+        assertThat(entity.getIsDeleted()).isEqualTo(true);
+
+    }
+
 }
