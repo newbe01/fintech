@@ -1,6 +1,7 @@
 package com.fastcampus.loan.service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import com.fastcampus.loan.domain.Application;
 import com.fastcampus.loan.dto.ApplicationDTO.*;
@@ -50,6 +51,23 @@ public class ApplicationServiceTest {
         Response actual = applicationService.create(request);
 
         assertThat(actual.getName()).isEqualTo(entity.getName());
+    }
+
+    @Test
+    void Should_ReturnResponseOfExistApplicationEntity_When_RequestExistApplicationId() {
+
+        Long findId = 1L;
+
+        Application entity = Application.builder()
+                        .applicationId(1L)
+                        .build();
+
+        when(applicationRepository.findById(findId)).thenReturn(Optional.ofNullable(entity));
+
+        Response actual = applicationService.get(findId);
+
+        assertThat(actual.getApplicationId()).isEqualTo(findId);
+
     }
 
 }
