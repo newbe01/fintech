@@ -1,11 +1,19 @@
 package com.fastcampus.loan.service;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import com.fastcampus.loan.domain.Application;
+import com.fastcampus.loan.domain.Terms;
+import com.fastcampus.loan.dto.ApplicationDTO;
 import com.fastcampus.loan.dto.ApplicationDTO.*;
+import com.fastcampus.loan.exception.BaseException;
+import com.fastcampus.loan.repository.AcceptTermsRepository;
 import com.fastcampus.loan.repository.ApplicationRepository;
+import com.fastcampus.loan.repository.TermsRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,8 +21,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +36,12 @@ public class ApplicationServiceTest {
 
     @Mock
     private ApplicationRepository applicationRepository;
+
+    @Mock
+    private TermsRepository termsRepository;
+
+    @Mock
+    private AcceptTermsRepository acceptTermsRepository;
 
     @Spy
     private ModelMapper modelMapper;
@@ -110,6 +126,98 @@ public class ApplicationServiceTest {
 
         assertThat(entity.getIsDeleted()).isEqualTo(true);
 
+    }
+
+    @Test
+    void Should_AddAcceptTerms_When_RequestAcceptTermsOfApplication() {
+        Terms entityA = Terms.builder()
+                .termsId(1L)
+                .name("대출 이용 약관 1")
+                .termsDetailUrl("https://abc-storage.acc/dslfjdlsfjlsdddads")
+                .build();
+
+        Terms entityB = Terms.builder()
+                .termsId(2L)
+                .name("대출 이용 약관 2")
+                .termsDetailUrl("https://abc-storage.acc/dslfjdlsfjlsdweqwq")
+                .build();
+
+        List<Long> acceptTerms = Arrays.asList(1L, 2L);
+
+        ApplicationDTO.AcceptTerms request = ApplicationDTO.AcceptTerms.builder()
+                .acceptTermsIds(acceptTerms)
+                .build();
+
+        Long findId = 1L;
+
+        when(applicationRepository.findById(findId)).thenReturn(
+                Optional.ofNullable(Application.builder().build()));
+        when(termsRepository.findAll(Sort.by(Sort.Direction.ASC, "termsId")))
+                .thenReturn(Arrays.asList(entityA, entityB));
+        when(acceptTermsRepository.save(any(com.fastcampus.loan.domain.AcceptTerms.class)))
+                .thenReturn(com.fastcampus.loan.domain.AcceptTerms.builder().build());
+
+
+        Boolean actual = applicationService.acceptTerms(findId, request);
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    void Should_ThrowException_When_RequestNotAllAcceptTermsOfApplication() {
+        Terms entityA = Terms.builder()
+                .termsId(1L)
+                .name("대출 이용 약관 1")
+                .termsDetailUrl("https://abc-storage.acc/dslfjdlsfjlsdddads")
+                .build();
+
+        Terms entityB = Terms.builder()
+                .termsId(2L)
+                .name("대출 이용 약관 2")
+                .termsDetailUrl("https://abc-storage.acc/dslfjdlsfjlsdweqwq")
+                .build();
+
+        List<Long> acceptTerms = Arrays.asList(1L);
+
+        ApplicationDTO.AcceptTerms request = ApplicationDTO.AcceptTerms.builder()
+                .acceptTermsIds(acceptTerms)
+                .build();
+
+        Long findId = 1L;
+
+        when(applicationRepository.findById(findId)).thenReturn(
+                Optional.ofNullable(Application.builder().build()));
+        when(termsRepository.findAll(Sort.by(Sort.Direction.ASC, "termsId"))).thenReturn(Arrays.asList(entityA, entityB));
+
+        assertThrows(BaseException.class, () -> applicationService.acceptTerms(1L, request));
+    }
+
+    @Test
+    void Should_ThrowException_When_RequestNotExistAcceptTermsOfApplication() {
+        Terms entityA = Terms.builder()
+                .termsId(1L)
+                .name("대출 이용 약관 1")
+                .termsDetailUrl("https://abc-storage.acc/dslfjdlsfjlsdddads")
+                .build();
+
+        Terms entityB = Terms.builder()
+                .termsId(2L)
+                .name("대출 이용 약관 2")
+                .termsDetailUrl("https://abc-storage.acc/dslfjdlsfjlsdweqwq")
+                .build();
+
+        List<Long> acceptTerms = Arrays.asList(1L, 3L);
+
+        ApplicationDTO.AcceptTerms request = ApplicationDTO.AcceptTerms.builder()
+                .acceptTermsIds(acceptTerms)
+                .build();
+
+        Long findId = 1L;
+
+        when(applicationRepository.findById(findId)).thenReturn(
+                Optional.ofNullable(Application.builder().build()));
+        when(termsRepository.findAll(Sort.by(Sort.Direction.ASC, "termsId"))).thenReturn(Arrays.asList(entityA, entityB));
+
+        Assertions.assertThrows(BaseException.class, () -> applicationService.acceptTerms(1L, request));
     }
 
 }
