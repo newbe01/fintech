@@ -6,5 +6,5 @@ public interface FileStorageService {
 
     void save(MultipartFile file);
 
-    
+
 }
