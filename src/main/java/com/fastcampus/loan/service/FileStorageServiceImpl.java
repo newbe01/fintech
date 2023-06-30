@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -53,4 +54,14 @@ public class FileStorageServiceImpl implements FileStorageService{
 
     }
 
+    @Override
+    public Stream<Path> loadAll() {
+
+        try {
+            return Files.walk(Paths.get(uploadPath), 1).filter((path -> !path.equals((Paths.get(uploadPath)))));
+        } catch (Exception e) {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        }
+        
+    }
 }
