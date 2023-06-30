@@ -67,7 +67,7 @@ public class ApplicationController extends AbstractController {
         return ResponseEntity.ok()
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename =\"" + file.getFilename() +"\"")
+                        "attachment; filename =\"" + file.getFilename() + "\"")
                 .body(file);
     }
 
@@ -83,6 +83,12 @@ public class ApplicationController extends AbstractController {
         }).collect(Collectors.toList());
 
         return ok(fileInfos);
+    }
+
+    @DeleteMapping("/files")
+    public ResponseDTO<Void> deleteAll() {
+        fileStorageService.deleteAll();
+        return ok();
     }
 
 }
