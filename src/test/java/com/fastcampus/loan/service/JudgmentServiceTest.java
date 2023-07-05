@@ -65,4 +65,40 @@ class JudgmentServiceTest {
 
     }
 
+    @Test
+    void Should_ReturnResponseOfExistJudgmentEntity_When_RequestExistJudgmentId() {
+        Long findId = 1L;
+
+        Judgment entity = Judgment.builder()
+                .judgmentId(1L)
+                .build();
+
+        when(judgmentRepository.findById(findId)).thenReturn(Optional.ofNullable(entity));
+
+        Response actual = judgmentService.get(1L);
+
+        assertThat(actual.getJudgmentId()).isEqualTo(findId);
+    }
+
+//     TODO: get judgment of application
+    @Test
+    void Should_ReturnResponseOfExistJudgmentEntity_When_RequestExistApplicationId() {
+        Long findId = 1L;
+
+        Judgment entity = Judgment.builder()
+                .judgmentId(1L)
+                .build();
+
+        Application applicationEntity = Application.builder()
+                .applicationId(1L)
+                .build();
+
+        when(applicationRepository.findById(findId)).thenReturn(Optional.ofNullable(applicationEntity));
+        when(judgmentRepository.findByApplicationId(findId)).thenReturn(Optional.ofNullable(entity));
+
+        Response actual = judgmentService.getJudgmentOfApplication(findId);
+
+        assertThat(actual.getJudgmentId()).isEqualTo(findId);
+    }
+
 }
