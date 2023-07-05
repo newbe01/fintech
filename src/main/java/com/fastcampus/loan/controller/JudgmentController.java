@@ -1,5 +1,6 @@
 package com.fastcampus.loan.controller;
 
+import com.fastcampus.loan.dto.ApplicationDTO.GrantAmount;
 import com.fastcampus.loan.dto.JudgmentDTO.*;
 import com.fastcampus.loan.dto.ResponseDTO;
 import com.fastcampus.loan.service.JudgmentService;
@@ -41,4 +42,8 @@ public class JudgmentController extends AbstractController {
         return ok();
     }
 
+    @PatchMapping("/{judgmentId}/grants")
+    public ResponseDTO<GrantAmount> grant(@PathVariable Long judgmentId) {
+        return ok(judgmentService.grant(judgmentId));
+    }
 }
