@@ -101,4 +101,30 @@ class JudgmentServiceTest {
         assertThat(actual.getJudgmentId()).isEqualTo(findId);
     }
 
+    @Test
+    void Should_ReturnUpdatedResponseOfExistJudgmentEntity_When_RequestUpdateExistJudgmentInfo() {
+
+        Long findId = 1L;
+
+        Judgment entity = Judgment.builder()
+                .judgmentId(findId)
+                .name("Member Kim")
+                .approvalAmount(BigDecimal.valueOf(1000))
+                .build();
+
+        Request request = Request.builder()
+                .name("Member Lee")
+                .approvalAmount(BigDecimal.valueOf(4000))
+                .build();
+
+        when(judgmentRepository.save(any(Judgment.class))).thenReturn(entity);
+        when(judgmentRepository.findById(findId)).thenReturn(Optional.ofNullable(entity));
+
+        Response actual = judgmentService.update(findId, request);
+
+        assertThat(actual.getJudgmentId()).isEqualTo(findId);
+        assertThat(actual.getName()).isEqualTo(request.getName());
+        assertThat(actual.getApprovalAmount()).isEqualTo(request.getApprovalAmount());
+    }
+
 }
