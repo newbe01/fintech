@@ -93,7 +93,7 @@ public class ApplicationController extends AbstractController {
         return ok();
     }
 
-    @PostMapping("/{applicationId}/contract")
+    @PutMapping("/{applicationId}/contract")
     ResponseDTO<Response> contract(@PathVariable Long applicationId) {
         return ok(applicationService.contract(applicationId));
     }
