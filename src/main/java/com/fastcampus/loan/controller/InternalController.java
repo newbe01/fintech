@@ -28,4 +28,12 @@ public class InternalController extends AbstractController {
         return ok(entryService.update(entryId, request));
     }
 
+    @DeleteMapping("/entries/{entryId}")
+    public ResponseDTO<Void> delete(@PathVariable Long entryId) {
+
+        entryService.delete(entryId);
+
+        return ok();
+    }
+
 }
