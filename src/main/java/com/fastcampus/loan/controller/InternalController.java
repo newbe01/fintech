@@ -8,6 +8,8 @@ import com.fastcampus.loan.service.RepaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping("/internal/applications")
 @RestController
@@ -44,4 +46,9 @@ public class InternalController extends AbstractController {
         return ok(repaymentService.create(applicationId, request));
     }
 
+    @GetMapping("{applicationId}/repayments")
+    public ResponseDTO<List<RepaymentDTO.ListResponse>> getPayments(@PathVariable Long applicationId) {
+        return ok(repaymentService.get(applicationId));
+    }
+    
 }
