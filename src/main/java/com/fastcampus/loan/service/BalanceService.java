@@ -8,4 +8,6 @@ public interface BalanceService {
 
     Response update(Long applicationId, UpdateRequest request);
 
+    Response repaymentUpdate(Long applicationId, RepaymentRequest request);
+
 }
