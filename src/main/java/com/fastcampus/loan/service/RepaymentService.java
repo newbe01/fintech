@@ -12,4 +12,6 @@ public interface RepaymentService {
 
     UpdateResponse update(Long repaymentId, Request request);
 
+    void delete(Long repaymentId);
+
 }
