@@ -1,10 +1,14 @@
 package com.fastcampus.loan.service;
 
 import com.fastcampus.loan.domain.Balance;
-import com.fastcampus.loan.dto.BalanceDTO.*;
+import com.fastcampus.loan.dto.BalanceDTO.RepaymentRequest;
+import com.fastcampus.loan.dto.BalanceDTO.Request;
+import com.fastcampus.loan.dto.BalanceDTO.Response;
+import com.fastcampus.loan.dto.BalanceDTO.UpdateRequest;
 import com.fastcampus.loan.exception.BaseException;
 import com.fastcampus.loan.exception.ResultType;
 import com.fastcampus.loan.repository.BalanceRepository;
+import com.fastcampus.loan.repository.RepaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,7 @@ public class BalanceServiceImpl implements BalanceService {
 
     private final BalanceRepository balanceRepository;
     private final ModelMapper modelMapper;
+    private final RepaymentRepository repaymentRepository;
 
     @Override
     public Response create(Long applicationId, Request request) {
@@ -58,4 +63,26 @@ public class BalanceServiceImpl implements BalanceService {
         return modelMapper.map(updated, Response.class);
     }
 
+    @Override
+    public Response repaymentUpdate(Long applicationId, RepaymentRequest request) {
+
+        Balance balance = balanceRepository.findByApplicationId(applicationId).orElseThrow(() -> {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        });
+
+        BigDecimal updatedBalance = balance.getBalance();
+        BigDecimal repaymentAmount = request.getRepaymentAmount();
+
+        if (request.getType().equals(RepaymentRequest.RepaymentType.ADD)) {
+            updatedBalance = updatedBalance.add(repaymentAmount);
+        } else {
+            updatedBalance = updatedBalance.subtract(repaymentAmount);
+        }
+
+        balance.setBalance(updatedBalance);
+
+        Balance updated = balanceRepository.save(balance);
+
+        return modelMapper.map(updated, Response.class);
+    }
 }

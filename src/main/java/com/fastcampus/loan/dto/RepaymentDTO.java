@@ -2,13 +2,14 @@ package com.fastcampus.loan.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class BalanceDTO implements Serializable {
+public class RepaymentDTO implements Serializable {
 
     @NoArgsConstructor
     @AllArgsConstructor
@@ -17,21 +18,7 @@ public class BalanceDTO implements Serializable {
     @Setter
     public static class Request {
 
-        private Long applicationId;
-        private BigDecimal entryAmount;
-
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @Getter
-    @Setter
-    public static class UpdateRequest {
-
-        private Long applicationId;
-        private BigDecimal beforeEntryAmount;
-        private BigDecimal afterEntryAmount;
+        private BigDecimal repaymentAmount;
 
     }
 
@@ -42,9 +29,11 @@ public class BalanceDTO implements Serializable {
     @Setter
     public static class Response {
 
-        private Long balanceId;
         private Long applicationId;
+        private BigDecimal repaymentAmount;
         private BigDecimal balance;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
     }
 
@@ -53,15 +42,28 @@ public class BalanceDTO implements Serializable {
     @Builder
     @Getter
     @Setter
-    public static class RepaymentRequest {
+    public static class UpdateResponse {
 
-        public enum RepaymentType {
-            ADD,
-            REMOVE
-        }
+        private Long applicationId;
+        private BigDecimal beforeRepaymentAmount;
+        private BigDecimal afterRepaymentAmount;
+        private BigDecimal balance;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    @Setter
+    public static class ListResponse {
+
+        private Long repaymentId;
         private BigDecimal repaymentAmount;
-        private RepaymentType type;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
     }
 
